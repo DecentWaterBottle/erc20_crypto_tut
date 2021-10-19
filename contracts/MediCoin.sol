@@ -1,14 +1,19 @@
 pragma solidity ^0.8.9;
 
 contract MediCoin{
-    // Constructor
-    // Set the total number of tokens
-    // Rea dthe total number of tokens
+
+    // Name
+    string public name = "MediCoin";
+    // Symbol
+    string public symbol = "MEDI";
 
     uint256 public totalSupply;
 
-    constructor () {
-        totalSupply = 1000000000;
+    mapping(address => uint256) public balanceOf;
+
+    constructor (uint256 _initialSupply) {
+        balanceOf[msg.sender] = _initialSupply;
+        totalSupply = _initialSupply;
         
     }
 }
