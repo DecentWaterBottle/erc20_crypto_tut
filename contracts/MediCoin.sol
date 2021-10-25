@@ -11,19 +11,23 @@ contract MediCoin{
 
 
     uint256 public totalSupply;
+    // Transfer Event
+    event Transfer(address indexed _from, address indexed _to,uint256 _value);
 
     mapping(address => uint256) public balanceOf;
 
     constructor (uint256 _initialSupply) {
+        // Giving initial supply to first account
         balanceOf[msg.sender] = _initialSupply;
         totalSupply = _initialSupply;
         
     }
 
-    //Transfer
+    //Transfer Function
     function transfer(address _to, uint256 _value) public returns(bool success){
         require(balanceOf[msg.sender] >= _value);
 
+        // Changing Balances
         balanceOf[msg.sender] -= _value;
         balanceOf[_to] += _value;
     }

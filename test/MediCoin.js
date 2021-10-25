@@ -40,6 +40,12 @@ contract("MediCoin", function(accounts){
             return tokenInstance.transfer(accounts[1], 500000000, { from: accounts[0]});
         }).then (function(receipt){
             return tokenInstance.balanceOf(accounts[1]);
+            assert.equal(receipt.logs.length, 1, 'triggers one event');
+            assert.equal(receipt.logs[0].event, "transfer", 'should be the "Transfer" event');
+            assert.equal(receipt.logs[0].args_from, accounts[0], 'logs the account the tokens are transfered from');
+            assert.equal(receipt.logs[0].args._to, accounts[1], 'logs the account the tokens are transferred to');
+            assert.equal(receipt.logs[0].args._value, 500000000, 'logs the transfer amount');
+            return tokenInstance.balanceOf(accounts[1]);
         }).then(function(balance){
             assert.equal(balance.toNumber(), 500000000, "adds the amount to the receiving account");
             return tokenInstance.balanceOf(accounts[0]);
