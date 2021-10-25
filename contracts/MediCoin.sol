@@ -30,5 +30,9 @@ contract MediCoin{
         // Changing Balances
         balanceOf[msg.sender] -= _value;
         balanceOf[_to] += _value;
+        // Calling transfer event
+        emit Transfer(msg.sender, _to, _value);
+
+        return true;
     }
 }
