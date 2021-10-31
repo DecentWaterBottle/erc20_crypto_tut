@@ -1,4 +1,3 @@
-
 pragma solidity ^0.8.9;
 
 //====================================================
@@ -50,6 +49,7 @@ contract MediCoin is MediCoinInterface{
     string public standard = "Medi Coin v1.0";
     // Decimals 
     uint8 public decimals;
+    MediCoinSale coinSale;
 
     uint256 public _totalSupply;
 
@@ -168,17 +168,33 @@ contract MediCoinSale is MediCoinSaleInterface{
 
     event Sell(address _buyer, uint256 _amount);
 
+    // ================================================================
+    // Constructor
+    //// @param _tokenContract The contract of which tokens are sold
+    //// @param _coinPrice The current price of a single MediCoin in Wei
+    // ================================================================
     constructor(MediCoin _tokenContract, uint256 _coinPrice) {
         admin = msg.sender;
         coinPrice = _coinPrice;
         tokenContract = _tokenContract;
     }
 
-    // Safe Multiplication from DS-Math
+    // ================================================================
+    //   Safe Multiplication from DS-Math
+    //// @notice A safe multiplication function taken from the DS-Math library
+    //// @param x (uint) First number to multiply
+    //// @param y (uint) Second number to multiply
+    //// @return (uint) Returns x & y multiplied together
+    // ================================================================
     function multiply(uint x, uint y) internal override pure returns (uint z) {
         require(y == 0 || (z = x * y) / y == x);
     }
-    // Token Buying
+
+    // ================================================================
+    //   Token Buying
+    //// @notice Allows the user to buy _tokens number of tokens
+    //// @param _tokens The number of tokens to buy
+    // ================================================================
     function buyTokens(uint256 _tokens) public override payable {
         require(msg.value == multiply(_tokens, coinPrice));
         require(tokenContract.balanceOf(address(this)) >= _tokens);
@@ -187,6 +203,10 @@ contract MediCoinSale is MediCoinSaleInterface{
         emit Sell(msg.sender, _tokens);
     }
 
+    // ================================================================
+    //  End Sale
+    //// @notice Ends the sale by sending all remaining tokens to the admin account
+    // ================================================================
     function endSale() public override {
         require(msg.sender == admin);
         require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
